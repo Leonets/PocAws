@@ -1,0 +1,25 @@
+version: '3.0'
+
+services:
+  s3:
+    image: adobe/s3mock:2.1.28
+    ports:
+     - "9090:9090"
+     - "9191:9191"
+  sqs:
+    depends_on:
+      - s3
+    image: roribio16/alpine-sqs
+    ports:
+      - "9324:9324"
+      - "9325:9325"
+    volumes:
+      - ./config/elasticmq/elasticmq.conf:/opt/config/elasticmq.conf
+  sns:
+    depends_on:
+      - sqs
+    image: s12v/sns:0.4.1
+    ports:
+     - "9911:9911"
+    volumes:
+     - ./config/sns/db.json:/etc/sns/db.json
