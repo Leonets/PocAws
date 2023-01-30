@@ -18,17 +18,9 @@ import aws.sdk.kotlin.services.sqs.model.Message
 import aws.sdk.kotlin.services.sqs.model.ReceiveMessageRequest
 import aws.smithy.kotlin.runtime.http.Url
 
-// snippet-end:[sqs.kotlin.send_messages.import]
 
-/**
-Before running this Kotlin code example, set up your development environment,
-including your credentials.
 
-For more information, see the following documentation topic:
-https://docs.aws.amazon.com/sdk-for-kotlin/latest/developer-guide/setup.html
- */
-
-// snippet-start:[sqs.kotlin.send_messages.main]
+@Deprecated("Use the new sendSQSMessage method")
 suspend fun sendMessages(queueUrlVal: String, message: String) {
     println("\nSend message to " + queueUrlVal)
     val sendRequest = SendMessageRequest {
@@ -42,10 +34,8 @@ suspend fun sendMessages(queueUrlVal: String, message: String) {
         println("A single message was successfully sent.")
     }
 }
-// snippet-end:[sqs.kotlin.send_messages.main]
 
 
-// snippet-start:[sns.kotlin.PublishTopic.main]
 suspend fun pubTopic(topicArnVal: String, messageVal: String) {
 
     println("\n Ready to send to topic !! " + topicArnVal + " the value " + messageVal)
@@ -66,7 +56,7 @@ suspend fun pubTopic(topicArnVal: String, messageVal: String) {
 
 
 
-// snippet-start:[sqs.kotlin.get_messages.main]
+@Deprecated("Use the new receiveSQSMessage method")
 suspend fun receiveMessages(queueUrlVal: String?): Message {
 
     println("Retrieving messages from $queueUrlVal")

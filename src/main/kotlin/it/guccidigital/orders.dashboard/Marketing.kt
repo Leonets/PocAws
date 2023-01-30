@@ -1,72 +1,73 @@
 package it.guccidigital.orders
 
-import com.google.gson.Gson
 import it.guccidigital.*
 import it.guccidigital.models.Order
 import kotlinx.coroutines.delay
 import org.http4k.core.*
-import org.http4k.core.Status.Companion.OK
-import org.http4k.filter.DebuggingFilters.PrintRequest
-import org.http4k.routing.bind
-import org.http4k.routing.routes
-import org.http4k.server.SunHttp
-import org.http4k.server.asServer
 import java.util.concurrent.Executors
-import kotlinx.coroutines.runBlocking
-
-val appItDashboard: HttpHandler = routes(
-    //register some routes
-    "/orders/pricing" bind Method.GET to {
-        println(message = " extract and show dashboard " )
-        Response(OK).body("TO BE CONSTRUCTED")
-    }
-)
+import software.amazon.awssdk.services.sqs.model.Message
 
 
-fun main() {
-    val printingApp: HttpHandler = PrintRequest().then(appItDashboard)
-    val server = printingApp.asServer(SunHttp(9002)).start()
-    //start a loop over the queue
-    runBlocking {
-            receiveIt()
-    }
-    println("Server started on " + server.port())
-}
-
-suspend fun receiveIt() {
+suspend fun receiveMarketingAlerts() {
     val worker = Executors.newFixedThreadPool(5)
-
-//    var submit = worker.submit{
-//        Thread.sleep(100L)
-//        receiveMessages(queueUrlVal = "dev-mao-order-events"))
-//    }
-
     while (true){
         delay(10000L)
-        val gson = Gson()
+        val messages = receiveSQSMessage(queueMarketingUrl.toString())
+        println(" Marketing alerts to be managed " + messages.size)
+        //consume messages over the queue
+        //based on some business logic, send to a subsequent queue
+        val pippo = if(4/2==2) "pluto" else "ciao"
+        val pippo2: String = when(4/2) { 2 -> "pluto" else -> "ciao" }
+        messages.map {
+                singleMessage
+                    ->   when(decidePriceChanges(getJsonOrder(singleMessage))) {
+                            true -> {
+                                runCatching {
+                                        sendSQSMessage(queueUrlVal = priceQueue, "Lower/Raise price") }
+                                    .onSuccess {
+                                        deleteSQSMessage(queueMarketingUrl,singleMessage)
+                                    }
+                            }
+                            false ->
+                            {
+                                println("no movement")
+                                deleteSQSMessage(queueMarketingUrl,singleMessage)
+                            }
+                        }
+        }
+        println(" Marketing alerts has been managed ")
+    }
+}
+
+private fun getJsonOrder(singleMessage: Message): Order? {
+    println(" Json syntax -> " + singleMessage.body())
+    return gson.fromJson(singleMessage.body(), Order::class.java)
+}
+
+@Deprecated("Use the new receiveMarketingAlerts method")
+suspend fun receiveIt() {
+    val worker = Executors.newFixedThreadPool(5)
+    while (true){
+        delay(10000L)
         //consume messages over the queue
         val extractedMessage: Order = gson.fromJson(receiveMessages(queueMarketingUrl).body, Order::class.java)
         println(" Order received = " + extractedMessage.item + " - " + extractedMessage.price)
         //based on a business logic, send to a subsequent queue
-        sendPriceMovement(decidePriceChanges(extractedMessage))
+        decidePriceChanges(extractedMessage).apply { sendSQSMessage(queueUrlVal = priceQueue, "Lower/Raise price") }
     }
 }
 
-fun decidePriceChanges(extractedMessage: Order): Boolean {
+fun decidePriceChanges(extractedMessage: Order?): Boolean {
 //    TODO("Price should change it item has already been sell a lot")
     return when {
-        extractedMessage.price>800 -> {
+        extractedMessage?.price!!.compareTo(800) > 0 -> {
             println(" Lower/Raise price");
             true
         }
-        else -> false
+        else -> {
+            println(" No price movement");
+            false
+        }
     }
 }
-
-
-suspend fun sendPriceMovement(decidePriceChanges: Boolean) {
-//    TODO("If true then send to a specific queue with price direction ")
-    if (decidePriceChanges) sendMessages(queueUrlVal = priceQueue, "Lower/Raise price")
-}
-
 

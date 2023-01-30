@@ -21,31 +21,24 @@ An S3 service offers the storage service
 ## Orders API
 Build the following API/Topic/Queue that contains the following endpoints:
 
-| Endpoint          | Medhod | Description                                                                          |
-|-------------------|--------|--------------------------------------------------------------------------------------|
-| /orders           | POST   | Receives orders in json format and delivers in queue 'Marketing' and topic 'Orders'  | 
-|                   |        | (it also save the payload in the S3 GucciBucket)                                     |
-| /orders/dashboard | GET    | Returns orders summary by showing country, total orders, total amount                |
+| Endpoint          | Medhod | Description                                                                         |
+|-------------------|--------|-------------------------------------------------------------------------------------|
+| /orders           | POST   | Receives orders in json format and delivers in queue 'Marketing' and topic 'Orders' | 
+|                   |        | (it also save the payload in the S3 GucciBucket)                                    |
+| /orders/dashboard | GET    | Returns orders summary by showing country, total orders, total amount               |
+| /orders/pricing   | GET    | Returns current item price change direction                                         |
+| /orders/shipping  | GET    | Returns order shipping details looping over the S3 GucciBucket key                  |
 
-## Marketing API
-This service listens on its specific queue (Marketing) and then decides if the item price need to be changed 
+## Integration layer
+This layer manages the following operations:
+- listens on a specific queue (Marketing) and then decides if the item price need to be changed 
 and if then sends a message to a specific queue (Pricing_Policy)
-
-| Endpoint        | Medhod | Description                         |
-|-----------------|--------|-------------------------------------|
-| /orders/pricing | GET    | Returns item price change direction |
-
-## Shipping API
-This service listens on its specific queue (Shipping) and then uses some subsystem for its execution.
-
-| Endpoint         | Medhod | Description                                                        |
-|------------------|--------|--------------------------------------------------------------------|
-| /orders/shipping | GET    | Returns order shipping details looping over the S3 GucciBucket key |
+- listens on a specific queue (Shipping) and then ask for immediate delivery by sending a message to a specific queue (Shipping_it) 
 
 ## Operazioni eseguite
 
-- publish su topic (a volte va a volte no, da aws cli adesso funziona)
-- send/consumo su queue
+- publish su topic (con lib aws standard)
+- send/receive/delete su queue (con lib aws standard)
 - creazione bucket/inserimento key/lettura key e suo contenuto
 - routes get e post
 - http client verso api get/post
@@ -53,29 +46,10 @@ This service listens on its specific queue (Shipping) and then uses some subsyst
 
 ## Errors
 1)
-c.a.t.s.util.S3MockExceptionHandler      : Responding with status 404: The specified bucket does not exist.
-2)
-Ready to send to topic !! arn:aws:sns:elasticmq-2:123450000001:local-orders_topic the value test from SendMessage.kt
-Exception in thread "main" aws.sdk.kotlin.services.sns.model.SnsException: Failed to parse response as 'awsQuery' error
-at aws.sdk.kotlin.services.sns.transform.PublishOperationDeserializerKt.throwPublishError(PublishOperationDeserializer.kt:56)
-3)
 gestione eccezioni, se pubTopic fallisce allora il loop si interrompe (Orders.kt)
-4)
-creazione di un secondo costruttore in un data class
-5)
+2)
 inline function
-6)
-ScheduledExecutor per eseguire il Long Polling (shipping.kt)
-7)
-come estrarre il risultato di un'elaborazione di un runblocking
-8)
-creazione di una classe per il contenimento di constant
-9)
-java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING at line 1 column 1 path $
-10)
-il TODO fa stop del processo ?
-Exception in thread "main" kotlin.NotImplementedError: An operation is not implemented: Price should change it item has already been sell a lot
-11)
+3)
 introduce map , flatmap and filters
 
 ### Payload to add a list of addresses to monitor

@@ -54,6 +54,10 @@ dependencies {
 
     implementation "org.slf4j:slf4j-log4j12:2.0.5"
 
+    implementation "software.amazon.awssdk:sqs:${awsSdkVersion}"
+    implementation "software.amazon.awssdk:s3:${awsSdkVersion}"
+    implementation "software.amazon.awssdk:sns:${awsSdkVersion}"
+
     testImplementation "org.http4k:http4k-testing-approval:${http4kVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

@@ -29,8 +29,9 @@ fun main()  {
 
     val myMessage = Message("hello", Email("bob@git.com"), Email("sue@git.com"))
     val myOrder1 = Order("id1", "M", 1800, "blue", "Via Roma, 2", "50144", "IT")
+    val myOrder3 = Order("id3", "M", 700, "blue", "Via Milano, 2", "50100", "IT")
     val myOrder2 = Order("id2", "L", 4000, "blue", "Rue Habc 2", "45355", "JP")
-    val ordersList: List<Order> = listOf(myOrder1, myOrder2)
+    val ordersList: List<Order> = listOf(myOrder1, myOrder2, myOrder3)
     val myOrders: Orders = Orders(ordersList)
 
     // to inject the body into the message - this also works with Response
