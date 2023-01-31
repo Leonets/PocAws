@@ -1,6 +1,6 @@
-## Gucci Playground (experiment with Aws, Kotlin & Local Development)
+# Gucci Playground (experiment with Aws, Kotlin & Local Development)
 
-# Coding core
+## Coding core
 
 Design and implement a system that is continuously pulling all the submitted orders 
 to the network and detects different order's type for then submitting to the appropriate system.
@@ -22,7 +22,7 @@ Please provide useful examples for evaluating the following:
        - queue operations affected by visibility timeout
        - coroutines simple usage
 
-## Proposed solution
+# Proposed solution
 
 The solution developed makes use of the following
 
@@ -58,10 +58,31 @@ and if then sends a message to a specific queue (Pricing_Policy)
 - http client over get/post api
 - data type conversion to/from json/httpmessage/message
 
-## TODO
-sqsclient -> async with await
+# Draw.io diagram
 
-### Payload to add a list of addresses to monitor
+[System Diagram](support/GucciDemo.jpg)
+
+# Useful 
+
+## Stack
+
+Execute the container with compose
+
+>docker compose -f compose.yml up
+>docker compose -f compose.yml down
+
+docker --version
+Docker version 20.10.22, build 3a2c30b
+
+docker-compose --version
+docker-compose version 1.25.1, build a82fef07
+
+Execute the kotlin application:
+ - Orders.kt
+ - OrdersClient.kt
+ - ExternalSystems.kt
+
+## Payload to add a list of addresses to monitor
 ```
 {
 “Orders”: 
@@ -94,3 +115,6 @@ sqsclient -> async with await
     }
 }
 ```
+
+## TODO
+sqsclient -> async with await
