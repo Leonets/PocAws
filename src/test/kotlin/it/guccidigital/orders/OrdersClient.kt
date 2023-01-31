@@ -18,7 +18,6 @@ data class Message(val subject: String, val from: Email, val to: Email)
 
 fun main()  {
     val client: HttpHandler = JavaHttpClient()
-
     val printingClient: HttpHandler = PrintResponse().then(client)
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +28,7 @@ fun main()  {
 
     val myMessage = Message("hello", Email("bob@git.com"), Email("sue@git.com"))
     val myOrder1 = Order("id1", "M", 1800, "blue", "Via Roma, 2", "50144", "IT")
-    val myOrder3 = Order("id3", "M", 700, "blue", "Via Milano, 2", "50100", "IT")
+    val myOrder3 = Order("id3", "M", 600, "blue", "Rue balzac, 2", "45445", "FR")
     val myOrder2 = Order("id2", "L", 4000, "blue", "Rue Habc 2", "45355", "JP")
     val ordersList: List<Order> = listOf(myOrder1, myOrder2, myOrder3)
     val myOrders: Orders = Orders(ordersList)
@@ -42,15 +41,4 @@ fun main()  {
     println(" output  " + response.bodyString() )
 }
 
-suspend fun createBucket(bucketName: String) {
-
-    val request = CreateBucketRequest {
-        bucket = bucketName
-    }
-
-    S3Client {endpointUrl = Url.parse("http://localhost:9090"); region = "s3gucci" }.use { s3 ->
-        s3.createBucket(request)
-        println("$bucketName is ready")
-    }
-}
 

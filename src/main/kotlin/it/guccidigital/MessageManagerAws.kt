@@ -2,7 +2,6 @@ package it.guccidigital
 
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sns.model.PublishRequest
 import software.amazon.awssdk.services.sns.model.PublishResponse
@@ -12,42 +11,44 @@ import software.amazon.awssdk.services.sqs.model.Message
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 
-var sqsClient: SqsClient = SqsClient.builder()
+val sqsClient: SqsClient = SqsClient.builder()
     .region(Region.of("elasticmq"))
     .credentialsProvider(ProfileCredentialsProvider.create())
     .endpointOverride(endpointURI)
     .build()
 
-var snsClient: SnsClient = SnsClient.builder()
+val snsClient: SnsClient = SnsClient.builder()
     .region(Region.of("elasticmq"))
     .credentialsProvider(ProfileCredentialsProvider.create())
     .endpointOverride(topicEndpointURI)
     .build()
 
 fun sendSQSMessage(queueUrlVal: String, message: String) {
-    println("\nSend message to " + queueUrlVal)
     val sendRequest = SendMessageRequest.builder().messageBody(message).queueUrl(queueUrlVal).build()
     sqsClient.sendMessage(sendRequest)
-    println("A single message was successfully sent.")
+    println("A single message was successfully sent to " + queueUrlVal)
 }
 
 fun receiveSQSMessage(queueUrlVal: String): List<Message> {
-    println("\nReceive message from " + queueUrlVal)
     val receiveRequest = ReceiveMessageRequest.builder()
             .maxNumberOfMessages(5)
+            .waitTimeSeconds(5)
             .queueUrl(queueUrlVal).build()
     return sqsClient.receiveMessage(receiveRequest).messages()
-    println("Some message have been read ")
+    println("Some message have been read from " + queueUrlVal)
 }
 
 fun deleteSQSMessage(queueUrlVal: String, message: Message) {
-    println("\nDelete message from " + queueUrlVal)
-    val deleteRequest = DeleteMessageRequest.builder()
-        .receiptHandle(message.receiptHandle())
-        .queueUrl(queueUrlVal)
-        .build()
-    sqsClient.deleteMessage(deleteRequest)
-    println("Some message have been deleted ")
+    try {
+        val deleteRequest = DeleteMessageRequest.builder()
+            .receiptHandle(message.receiptHandle())
+            .queueUrl(queueUrlVal)
+            .build()
+        val deleteMessage = sqsClient.deleteMessage(deleteRequest)
+        println("Some message have been deleted from " + queueUrlVal)
+    } catch (ex: Exception) {
+        println("${Thread.currentThread().name} failed with {$ex}. Retrying...")
+    }
 }
 
 fun pubSNSTopic(message: String?, topicArn: String?) {

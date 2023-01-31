@@ -1,4 +1,4 @@
-package it.guccidigital.models
+package it.guccidigital.playground
 
 import org.http4k.template.ViewModel
 

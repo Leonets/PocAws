@@ -1,8 +1,5 @@
 package it.guccidigital.playground
 
-import it.guccidigital.formats.JacksonMessage
-import it.guccidigital.formats.jacksonMessageLens
-import it.guccidigital.models.FreemarkerViewModel
 import org.http4k.core.Body
 import org.http4k.core.ContentType.Companion.APPLICATION_JSON
 import org.http4k.core.ContentType.Companion.TEXT_HTML

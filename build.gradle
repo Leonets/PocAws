@@ -58,6 +58,14 @@ dependencies {
     implementation "software.amazon.awssdk:s3:${awsSdkVersion}"
     implementation "software.amazon.awssdk:sns:${awsSdkVersion}"
 
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
+    implementation platform("org.jetbrains.kotlin:kotlin-bom:${kotlinVersion}")
+    implementation platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:${kotlinxVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
+
     testImplementation "org.http4k:http4k-testing-approval:${http4kVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

@@ -6,10 +6,23 @@ Design and implement a system that is continuously pulling all the submitted ord
 to the network and detects different order's type for then submitting to the appropriate system.
 
 * When an order is detected, store the information regarding the order, the total amount and the destination, 
-       and then let a subsystem decide if the price needs to be changed 
-* Given a list of countries, just filter orders involving (sending or receiving) those countries.
+       and then:
+              - let a subsystem decide if the price needs to be changed
+              - distribute the order to the subsequent systems (order, shipping and accounting)
+* [OPT] Given a list of countries, just filter orders involving (sending or receiving) those countries.
 * Data can be stored in memory 
 * Orders only need to be tracked since the application is started
+
+Please detail a solution using Kotlin and AWS (SQS, SNS, S3)
+
+Please provide useful examples for evaluating the following:
+       - fault tolerance to sqs crash
+       - fault tolerance to sns crash
+       - queue operations affected by visibility timeout
+
+## Proposed solution
+
+The solution developed makes use of the following
 
 ## Notification Layer
 An SNS service listens on the topic and republish on three different queue (Shipping; Accounting; Order)
@@ -19,38 +32,35 @@ An SQS service manages 5 different queues (Shipping; Accounting; Order, Marketin
 An S3 service offers the storage service
 
 ## Orders API
-Build the following API/Topic/Queue that contains the following endpoints:
+The following API/Topic/Queue have been built that contains the following endpoints:
 
-| Endpoint          | Medhod | Description                                                                         |
-|-------------------|--------|-------------------------------------------------------------------------------------|
-| /orders           | POST   | Receives orders in json format and delivers in queue 'Marketing' and topic 'Orders' | 
-|                   |        | (it also save the payload in the S3 GucciBucket)                                    |
-| /orders/dashboard | GET    | Returns orders summary by showing country, total orders, total amount               |
-| /orders/pricing   | GET    | Returns current item price change direction                                         |
-| /orders/shipping  | GET    | Returns order shipping details looping over the S3 GucciBucket key                  |
+| Endpoint          | Medhod | Description                                                                         | Availability |
+|-------------------|--------|-------------------------------------------------------------------------------------|--------------|
+| /orders           | POST   | Receives orders in json format and delivers in queue 'Marketing' and topic 'Orders' | Done         |
+|                   |        | (it also save the payload in the S3 GucciBucket)                                    |              |
+| /orders/dashboard | GET    | Returns orders summary by showing country, total orders, total amount               | Done         |
+| /orders/pricing   | GET    | Returns current item price change direction                                         | TODO         |
+| /orders/shipping  | GET    | Returns order shipping details looping over the S3 GucciBucket key                  | Done         |
 
 ## Integration layer
 This layer manages the following operations:
 - listens on a specific queue (Marketing) and then decides if the item price need to be changed 
 and if then sends a message to a specific queue (Pricing_Policy)
-- listens on a specific queue (Shipping) and then ask for immediate delivery by sending a message to a specific queue (Shipping_it) 
 
-## Operazioni eseguite
+## Libraries used and functions used
 
-- publish su topic (con lib aws standard)
-- send/receive/delete su queue (con lib aws standard)
-- creazione bucket/inserimento key/lettura key e suo contenuto
-- routes get e post
-- http client verso api get/post
+- publish on topic (with amazon aws standard lib)
+- send/receive/delete on queue (with amazon aws standard lib)
+- create bucket/insert key/read key and its content
+- routes get and post
+- http client over get/post api
 - data type conversion to/from json/httpmessage/message
 
-## Errors
-1)
-gestione eccezioni, se pubTopic fallisce allora il loop si interrompe (Orders.kt)
-2)
-inline function
-3)
-introduce map , flatmap and filters
+## TODO
+
+sqsclient -> async con await
+togliere Globalscope
+
 
 ### Payload to add a list of addresses to monitor
 ```

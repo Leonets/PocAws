@@ -29,7 +29,7 @@ suspend fun sendMessages(queueUrlVal: String, message: String) {
         delaySeconds = 10
     }
 
-    SqsClient {endpointUrl = Url.parse("http://localhost:9324") ; region = "elasticmq" }.use { sqsClient ->
+    SqsClient {sqsEndpointUrl; region = "elasticmq" }.use { sqsClient ->
         sqsClient.sendMessage(sendRequest)
         println("A single message was successfully sent.")
     }
@@ -67,7 +67,7 @@ suspend fun receiveMessages(queueUrlVal: String?): Message {
         waitTimeSeconds = 20 //enabled long polling for receiving the SQS messages by setting the wait time as 20 seconds ?
     }
 
-    SqsClient {endpointUrl = queueEndpointUrl; region = "elasticmq" }.use { sqsClient ->
+    SqsClient {endpointUrl = sqsEndpointUrl; region = "elasticmq" }.use { sqsClient ->
         val response = sqsClient.receiveMessage(receiveMessageRequest)
         response.messages?.forEach { message ->
             println(" Message has been read from queue = " + message.body)

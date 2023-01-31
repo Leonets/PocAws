@@ -1,4 +1,4 @@
-package it.guccidigital.formats
+package it.guccidigital.playground
 
 import org.http4k.core.Body
 import org.http4k.format.Jackson.auto
