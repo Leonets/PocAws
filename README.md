@@ -8,7 +8,8 @@ to the network and detects different order's type for then submitting to the app
 * When an order is detected, store the information regarding the order, the total amount and the destination, 
        and then:
               - let a subsystem decide if the price needs to be changed
-              - distribute the order to the subsequent systems (order, shipping and accounting)
+              - distribute the order to the subsequent systems (order, shipping and accounting) in pairs
+                     with interacting with external system (API)
 * [OPT] Given a list of countries, just filter orders involving (sending or receiving) those countries.
 * Data can be stored in memory 
 * Orders only need to be tracked since the application is started
@@ -19,6 +20,7 @@ Please provide useful examples for evaluating the following:
        - fault tolerance to sqs crash
        - fault tolerance to sns crash
        - queue operations affected by visibility timeout
+       - coroutines simple usage
 
 ## Proposed solution
 
@@ -57,10 +59,7 @@ and if then sends a message to a specific queue (Pricing_Policy)
 - data type conversion to/from json/httpmessage/message
 
 ## TODO
-
-sqsclient -> async con await
-togliere Globalscope
-
+sqsclient -> async with await
 
 ### Payload to add a list of addresses to monitor
 ```
