@@ -5,22 +5,23 @@
 Design and implement a system that is continuously pulling all the submitted orders 
 to the network and detects different order's type for then submitting to the appropriate system.
 
-* When an order is detected, store the information regarding the order, the total amount and the destination, 
+- When an order is detected, store the information regarding the order, the total amount and the destination, 
        and then:
-              - let a subsystem decide if the price needs to be changed
-              - distribute the order to the subsequent systems (order, shipping and accounting) in pairs
-                     with interacting with external system (API)
-* [OPT] Given a list of countries, just filter orders involving (sending or receiving) those countries.
-* Data can be stored in memory 
-* Orders only need to be tracked since the application is started
+  - let a subsystem decide if the price needs to be changed
+  - distribute the order to the subsequent systems (order, shipping and accounting) in pairs
+                           with interacting with external system (API)
+- [OPT] Given a list of countries, just filter orders involving those countries.
+- [OPT] Create a dashboard showing grouped orders by country and total amount
+- Data can be stored in memory 
+- Orders only need to be tracked since the application is started
 
 Please detail a solution using Kotlin and AWS (SQS, SNS, S3)
 
 Please provide useful examples for evaluating the following:
-       - fault tolerance to sqs crash
-       - fault tolerance to sns crash
-       - queue operations affected by visibility timeout
-       - coroutines simple usage
+- fault tolerance to sqs crash
+- fault tolerance to sns crash
+- queue operations affected by visibility timeout
+- coroutines simple usage
 
 # Proposed solution
 
@@ -36,18 +37,19 @@ An S3 service offers the storage service
 ## Orders API
 The following API/Topic/Queue have been built that contains the following endpoints:
 
-| Endpoint          | Medhod | Description                                                                         | Availability |
-|-------------------|--------|-------------------------------------------------------------------------------------|--------------|
-| /orders           | POST   | Receives orders in json format and delivers in queue 'Marketing' and topic 'Orders' | Done         |
-|                   |        | (it also save the payload in the S3 GucciBucket)                                    |              |
-| /orders/dashboard | GET    | Returns orders summary by showing country, total orders, total amount               | Done         |
-| /orders/pricing   | GET    | Returns current item price change direction                                         | TODO         |
-| /orders/shipping  | GET    | Returns order shipping details looping over the S3 GucciBucket key                  | Done         |
+| Endpoint          | Medhod | Description                                                                          | Availability |
+|-------------------|--------|--------------------------------------------------------------------------------------|--------------|
+| /orders           | POST   | Receives orders in json format and delivers in queue 'Marketing' and topic 'Orders'  | Done         |
+|                   |        | (it also save the payload in the S3 GucciBucket)                                     |              |
+| /orders/dashboard | GET    | Returns orders summary by showing country, total orders, total amount (data from S3) | Done         |
+| /orders/shipping  | GET    | Returns order shipping details (data from S3)                                        | Done         |
 
 ## Integration layer
 This layer manages the following operations:
+
 - listens on a specific queue (Marketing) and then decides if the item price need to be changed 
 and if then sends a message to a specific queue (Pricing_Policy)
+- listens over the three queues (Accounting, Shipping, Orders) for then forwarding the request to an external system (HTTP)
 
 ## Libraries used and functions used
 
@@ -58,11 +60,9 @@ and if then sends a message to a specific queue (Pricing_Policy)
 - http client over get/post api
 - data type conversion to/from json/httpmessage/message
 
-# Draw.io diagram
+## Draw.io diagram
 
 [System Diagram](support/GucciDemo.jpg)
-
-# Useful 
 
 ## Stack
 
@@ -78,11 +78,12 @@ docker-compose --version
 docker-compose version 1.25.1, build a82fef07
 
 Execute the kotlin application:
- - Orders.kt
- - OrdersClient.kt
- - ExternalSystems.kt
 
-## Payload to add a list of addresses to monitor
+- Orders.kt
+- OrdersClient.kt
+- ExternalSystems.kt
+
+## Payload that represents Orders
 ```
 {
 “Orders”: 
