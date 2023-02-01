@@ -17,6 +17,7 @@ to the network and detects different order's type for then submitting to the app
 Please detail a solution using Kotlin and AWS (SQS, SNS, S3)
 
 Please provide useful examples for evaluating the following:
+
 - fault tolerance to sqs crash
 - fault tolerance to sns crash
 - queue operations affected by visibility timeout
@@ -28,8 +29,14 @@ The solution developed makes use of the following
 
 ## Notification Layer
 An SNS service listens on the topic and republish on three different queue (Shipping; Accounting; Order)
+
+[Aws Simple Notification Service](support/sns-architecture.png)
+
 ## Queue Layer
 An SQS service manages 5 different queues (Shipping; Accounting; Order, Marketing and Pricing_Policy)
+
+[Aws Simple Queue Service](support/sqs-architecture.png)
+
 ## Data Layer
 An S3 service offers the storage service
 
@@ -76,11 +83,16 @@ Docker version 20.10.22, build 3a2c30b
 docker-compose --version
 docker-compose version 1.25.1, build a82fef07
 
+docker compose version
+Docker Compose version v2.14.1
+
 Execute the kotlin application:
 
 - Orders.kt
 - OrdersClient.kt
 - ExternalSystems.kt
+
+Queue can be monitored from here: http://localhost:9325/
 
 ## Payload that represents Orders
 ```

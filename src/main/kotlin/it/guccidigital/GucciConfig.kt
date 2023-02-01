@@ -6,7 +6,6 @@ import java.net.URI
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.asSequence
 
-public class Config(val bucketName: String)
 
 val gson = Gson()
 
@@ -32,21 +31,17 @@ val order_topic_arn: String = "arn:aws:sns:elasticmq-2:123450000001:local-orders
 val priceQueue: String = "http://localhost:9324/queue/mao-pricing-policy-events"
 
 val sqsEndpointUrl = Url.parse("http://localhost:9324")
-val s3EndpointUrl: Url = Url.parse("http://localhost:9090");
+val s3EndpointUrl: Url = Url.parse("http://localhost:9090")
 val topicEndpointUrl = Url.parse("http://localhost:9911")
 
 val endpointURI = URI.create("http://localhost:9324")
 val topicEndpointURI = URI.create("http://localhost:9911")
-val s3EndpointURI: URI = URI.create("http://localhost:9090");
+val s3EndpointURI: URI = URI.create("http://localhost:9090")
 
 
-fun <T> singletonList(item: T): List<T> {
-    // ...
-    return listOf(item)
-}
-
-//fun <T> T.basicToString(): String { // extension function
+//fun <T> singletonList(item: T): List<T> {
 //    // ...
+//    return listOf(item)
 //}
 
 
