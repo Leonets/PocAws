@@ -7,7 +7,7 @@ to the network and detects different order's type for then submitting to the app
 
 - When an order is detected, store the information regarding the order, the total amount and the destination, and then:
     - let a subsystem decide if the price needs to be changed
-  - distribute the order to the subsequent systems (order, shipping and accounting) in pairs
+    - distribute the order to the subsequent systems (order, shipping and accounting) in pairs
                            with interacting with external system (API)
 - [OPT] Given a list of countries, just filter orders involving those countries.
 - [OPT] Create a dashboard showing grouped orders by country and total amount
