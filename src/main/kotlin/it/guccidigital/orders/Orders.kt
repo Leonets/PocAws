@@ -27,9 +27,6 @@ import software.amazon.awssdk.services.sqs.model.Message
 import java.io.File
 import java.lang.Thread.currentThread
 
-val ordersLens = Body.auto<Orders>().toLens()
-val loopMarketingTiming = 60000L
-val loopOrdersTiming = 20000L
 val httpPort = 9000
 
 fun main() {

@@ -27,13 +27,13 @@ val delayMoreThanVisibilityTimeout = 15000L //no message gets managed because ev
 //definizione delle routes
 val app: HttpHandler = routes(
     //register some routes
-    "/Accounting" bind GET to {
+    "/mock/Accounting" bind GET to {
         Response(OK).body("Accounting operations started")
-    },"/Order" bind GET to {
+    },"/mock/Order" bind GET to {
         println("/Order called by someone ")
         Thread.sleep(delayLessThanVisibilityTimeout) //intentionally blocking IO
         Response(OK).body("Order operations started")
-    },"/Shipping" bind GET to {
+    },"/mock/Shipping" bind GET to {
         Response(OK).body("Shipping operations started")
     },
 )
@@ -41,7 +41,7 @@ val app: HttpHandler = routes(
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
 
-    val server = printingApp.asServer(SunHttp(9001)).start()
+    val server = printingApp.asServer(SunHttp(mockHttpPort)).start()
     println("Server started on " + server.port())
 
 }

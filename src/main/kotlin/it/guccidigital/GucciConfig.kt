@@ -2,6 +2,9 @@ package it.guccidigital
 
 import aws.smithy.kotlin.runtime.http.Url
 import com.google.gson.Gson
+import it.guccidigital.models.Orders
+import org.http4k.core.Body
+import org.http4k.format.Jackson.auto
 import java.net.URI
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.asSequence
@@ -38,6 +41,10 @@ val endpointURI = URI.create("http://localhost:9324")
 val topicEndpointURI = URI.create("http://localhost:9911")
 val s3EndpointURI: URI = URI.create("http://localhost:9090")
 
+val ordersLens = Body.auto<Orders>().toLens()
+val loopMarketingTiming = 60000L
+val loopOrdersTiming = 20000L
+val httpPort = 9000
 
 //fun <T> singletonList(item: T): List<T> {
 //    // ...
