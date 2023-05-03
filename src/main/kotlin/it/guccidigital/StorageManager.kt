@@ -3,9 +3,7 @@ import aws.sdk.kotlin.services.s3.model.*
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.asByteStream
 import aws.smithy.kotlin.runtime.content.writeToFile
-import aws.smithy.kotlin.runtime.http.Url
 import it.guccidigital.s3EndpointUrl
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -13,10 +11,6 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
-val key = "unknown2"
-val objectPath = "/home/lbattagli@florence-consulting.it/Projects/GucciDemo1/storage/orders.json"
-val savePath = "/home/lbattagli@florence-consulting.it/Projects/GucciDemo1/storage/orders-saved.json"
-val toBucket = "/home/lbattagli@florence-consulting.it/Projects/GucciDemo1/storage/orders.json"
 
 suspend fun main(args: Array<String>) {
 
