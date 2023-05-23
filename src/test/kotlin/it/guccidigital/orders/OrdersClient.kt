@@ -34,10 +34,12 @@ fun main()  {
     val myOrders: Orders = Orders(ordersList)
 
     // to inject the body into the message - this also works with Response
-    val requestWithEmail = ordersLens(myOrders, Request(GET, "/"))
+    val requestWithEmail = ordersLens(myOrders, Request(GET, "/api"))
 
     //executes the request
-    val response: Response = printingClient(requestWithEmail.method(POST).uri(Uri.of( "http://localhost:9000/orders")))
+    // use /api/orders to publish to mule app
+    // use /orders to publish to kotlin app
+    val response: Response = printingClient(requestWithEmail.method(POST).uri(Uri.of( "http://localhost:9000/api/orders")))
     println(" output  " + response.bodyString() )
 }
 
